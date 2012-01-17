@@ -752,7 +752,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = openFrameworksDebug;
-				SDKROOT = "";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Debug;
 		};
@@ -794,7 +794,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = openFrameworks;
-				SDKROOT = "";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Release;
 		};
