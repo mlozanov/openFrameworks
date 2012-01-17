@@ -987,7 +987,11 @@ void ofGLRenderer::drawSphere(float x, float y, float z, float radius) {
 	int i, j;
 	for (j=0;j<ndiv2;j++) {
 	#ifdef TARGET_OPENGLES
-		glDrawArrays(GL_TRIANGLE_STRIP, j * ((n+1)*2), (n+1)*2);
+        if (bFilled) {
+            glDrawArrays(GL_TRIANGLE_STRIP, j * ((n+1)*2), (n+1)*2);
+        } else {
+            glDrawArrays(GL_LINE_STRIP, j * ((n+1)*2), (n+1)*2);
+        }
 	#else
 		if(bFilled) {
 			glDrawArrays(GL_TRIANGLE_STRIP, j * ((n+1)*2), (n+1)*2);
