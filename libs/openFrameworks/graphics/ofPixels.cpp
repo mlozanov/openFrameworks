@@ -446,6 +446,11 @@ void ofPixels_<PixelType>::rotate90To(ofPixels_<PixelType> & dst, int nClockwise
 		return;
 	}
 
+	if(&dst == this){
+		rotate90(nClockwiseRotations);
+		return;
+	}
+
 	// first, figure out which type of rotation we have
 	int rotation = nClockwiseRotations;
 	while (rotation < 0){
@@ -521,42 +526,13 @@ void ofPixels_<PixelType>::rotate90(int nClockwiseRotations){
 		return;
 	}
 
-	// otherwise, we will need to do some new allocaiton.
-	int bytesPerPixel = channels;
-	PixelType * oldPixels = pixels;
-	int newWidth = height;
-	int newHeight = width;
-	PixelType * newPixels = new PixelType[newWidth*newHeight*bytesPerPixel];
-
-	if(rotation == 1){
-		for (int i = 0; i < width; i++){
-			for (int j = 0; j < height; j++){
-
-				int pixela = (j*width + i);
-				int pixelb = ((i) * newWidth + (height - j - 1));
-				for (int k = 0; k < bytesPerPixel; k++){
-					newPixels[pixelb*bytesPerPixel + k] = oldPixels[pixela*bytesPerPixel + k];
-				}
-
-			}
-		}
-	} else if(rotation == 3){
-		for (int i = 0; i < width; i++){
-			for (int j = 0; j < height; j++){
-
-				int pixela = (j*width + i);
-				int pixelb = ((width-i-1) * newWidth + j);
-				for (int k = 0; k < bytesPerPixel; k++){
-					newPixels[pixelb*bytesPerPixel + k] = oldPixels[pixela*bytesPerPixel + k];
-				}
-			}
-		}
-	}
-
+	ofPixels_<PixelType> newPixels;
+	rotate90To(newPixels,nClockwiseRotations);
 	delete [] pixels;
-	pixels = newPixels;
-	width = newWidth;
-	height = newHeight;
+	pixels = newPixels.pixels;
+	width = newPixels.width;
+	height = newPixels.height;
+	newPixels.pixelsOwner = false;
 
 }
 
@@ -601,6 +577,10 @@ void ofPixels_<PixelType>::mirror(bool vertically, bool horizontal){
 //----------------------------------------------------------------------
 template<typename PixelType>
 void ofPixels_<PixelType>::mirrorTo(ofPixels_<PixelType> & dst, bool vertically, bool horizontal){
+	if(&dst == this){
+		mirror(vertically,horizontal);
+		return;
+	}
 
 	if (!vertically && !horizontal){
 		dst = *this;
@@ -708,6 +688,9 @@ float ofPixels_<PixelType>::bicubicInterpolate (const float *patch, float x,floa
 //----------------------------------------------------------------------
 template<typename PixelType>
 bool ofPixels_<PixelType>::resizeTo(ofPixels_<PixelType>& dst, ofInterpolationMethod interpMethod){
+	if(&dst == this){
+		return true;
+	}
 
 	if (!(isAllocated()) || !(dst.isAllocated()) || getBytesPerPixel() != dst.getBytesPerPixel()) return false;
 
